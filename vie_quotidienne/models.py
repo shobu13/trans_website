@@ -61,4 +61,5 @@ class Cimetiere(models.Model):
 
 
 class Commerce(models.Model):
-    pass
+    nom = models.CharField(max_length=150)
+    description = MarkdownxField()
