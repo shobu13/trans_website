@@ -1,0 +1,12 @@
+{% load markdownx %}
+<div class="markdownx">
+    <ul>
+        <li>**texte en gras** :{{'**texte en gras**' | markdown:"<p>" }}</li>
+        <li>*texte en italique* : {{ '*texte en italique*'|markdown:"<p>" }}</li>
+        <li>***texte en italique et en gras*** : {{ '***texte en italique et en gras***'|markdown:"<p>" }}</li>
+        <li>[lien](https://www.google.com) : {{ '[lien](https://www.google.com)'|markdown:"<p>" }}</li>
+        <li>ligne : --- {{ '---'|markdown:"<p>" }}</li>
+    </ul>
+   {% include 'django/forms/widgets/textarea.html' %}
+    <div class="markdownx-preview"></div>
+</div>

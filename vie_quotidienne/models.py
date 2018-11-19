@@ -3,28 +3,9 @@ from django.db import models
 from markdownx.models import MarkdownxField
 
 
-class Culte(models.Model):
+class SalleDeFete(models.Model):
     """
-    Modele representant un culte
-    le nom est limite a 150 caractere
-    """
-    nom = models.CharField(max_length=150)
-    texte = models.TextField()
-
-
-class Emploi(models.Model):
-    """
-    Modele representant un emploi
-    le titre est limite a 250 caractere
-    """
-    titre = models.CharField(max_length=250)
-    description = models.TextField()
-    remuneration = models.FloatField()
-
-
-class SalleDeSpectacle(models.Model):
-    """
-    modele representant une salle de spectacle
+    modele representant une salle de Fete
     le champ description supporte le markdown et servira à donner diverses infos.
     """
     nom = models.CharField(max_length=150)
@@ -63,3 +44,9 @@ class Cimetiere(models.Model):
 class Commerce(models.Model):
     nom = models.CharField(max_length=150)
     description = MarkdownxField()
+
+
+class Marche(models.Model):
+    ouverture = models.DateTimeField()
+    fermeture = models.DateTimeField()
+    adresse = models.CharField(max_length=250)
