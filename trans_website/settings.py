@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'vie_municipale',
     'vie_quotidienne',
     'association',
+    'cadre_de_vie',
 
     'markdownx',
 ]
