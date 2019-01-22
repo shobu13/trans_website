@@ -8,6 +8,11 @@ class Evenement(models.Model):
     description = MarkdownxField()
     est_mairie = models.BooleanField(default=False)
 
+    owner = models.ForeignKey('association.Association', on_delete=models.PROTECT, null=True)
+
+    def __str__(self):
+        return self.nom
+
 
 class Patrimoine(models.Model):
     nom = models.CharField(max_length=150)
@@ -33,8 +38,13 @@ class PatrimoineImage(models.Model):
         self.image.delete()
         return super().delete(using, keep_parents)
 
+    def __str__(self):
+        return "{} de {}".format(self.image.name, self.patrimoine.nom)
+
 
 class Travail(models.Model):
+    """Travail de voirie, ect..."""
+
     class Meta:
         verbose_name_plural = 'Travaux'
 
@@ -64,13 +74,19 @@ class Distinction(models.Model):
         return '{} le {}'.format(self.nom, self.date)
 
 
-class New(models.Model):
+class Newpaper(models.Model):
     titre = models.CharField(max_length=150)
-    text = MarkdownxField()
-    date = models.DateField(default=timezone.now())
+    texte = MarkdownxField()
+    date = models.DateField(default=timezone.now)
     est_mairie = models.BooleanField()
 
-    models.ForeignKey('Association', on_delete=models.CASCADE)
+    owner = models.ForeignKey('association.Association', on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        return self.titre
+        if self.owner is None:
+            return "{} de {}".format(self.titre, 'mairie')
+        else:
+            return "{} de {}".format(self.titre, self.owner.nom)
+
+    # TODO étant donner le système d'upload, tout les model utilisant l'upload d'image doivent
+    #  être créer avant l'édition du texte et démarrent donc avec un texte Null ou vide.

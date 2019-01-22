@@ -1,4 +1,6 @@
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
+from django.utils import timezone
 
 from markdownx.models import MarkdownxField
 
@@ -8,10 +10,13 @@ class Commission(models.Model):
     Modele definissant une commission
     """
     titre = models.CharField(max_length=250)
+    date = models.DateField(default=timezone.now)
     description = MarkdownxField()
 
-    titulaires = models.ManyToManyField('auth.User', related_name='Commission_titulaire_set')
-    suppleants = models.ManyToManyField('auth.User', related_name='Commission_suppleants_set')
+    titulaires = models.ManyToManyField('auth.User', related_name='commission_titulaire')
+    suppleants = models.ManyToManyField('auth.User', related_name='commission_suppleants')
+
+    images = GenericRelation('core.UploadedImage')
 
     def __str__(self):
         return self.titre
@@ -44,6 +49,8 @@ class Conseil(models.Model):
     titre = models.CharField(max_length=250)
     texte = MarkdownxField()
     date = models.DateField()
+
+    images = GenericRelation('core.UploadedImage')
 
     def __str__(self):
         return "{} - {}".format(self.titre, str(self.date))

@@ -10,11 +10,15 @@ class Association(models.Model):
     possède 3 clé étrangères en référence à :model:`auth.User` pour le president, le tresorier et
     secretaire.
     """
+    nom = models.CharField(max_length=150)
     description = MarkdownxField()
 
     president = models.ForeignKey('auth.User', models.PROTECT,
-                                  related_name='Association_president_set')
+                                  related_name='association_president')
     tresorier = models.ForeignKey('auth.User', models.PROTECT,
-                                  related_name='Association_tresorier_set')
+                                  related_name='association_tresorier')
     secretaire = models.ForeignKey('auth.User', models.PROTECT,
-                                   related_name='Association_secretaire_set')
+                                   related_name='association_secretaire')
+
+    def __str__(self):
+        return self.nom

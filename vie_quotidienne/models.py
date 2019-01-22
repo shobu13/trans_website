@@ -12,6 +12,9 @@ class SalleDeFete(models.Model):
     adresse = models.CharField(max_length=250)
     description = MarkdownxField()
 
+    def __str__(self):
+        return self.nom
+
 
 class Hebergement(models.Model):
     """
@@ -22,7 +25,12 @@ class Hebergement(models.Model):
     nom = models.CharField(max_length=150)
     adresse = models.CharField(max_length=250)
     description = models.TextField()
+
     type = models.ForeignKey('TypeHebergement', on_delete=models.PROTECT)
+    owner = models.ForeignKey('auth.User', on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.nom
 
 
 class TypeHebergement(models.Model):
@@ -30,6 +38,9 @@ class TypeHebergement(models.Model):
     modele representant un type d'hebergement
     """
     libelle = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.libelle
 
 
 class Cimetiere(models.Model):
@@ -40,13 +51,34 @@ class Cimetiere(models.Model):
     adresse = models.CharField(max_length=250)
     description = MarkdownxField()
 
+    def __str__(self):
+        return self.nom
+
 
 class Commerce(models.Model):
     nom = models.CharField(max_length=150)
+    adresse = models.CharField(max_length=250)
     description = MarkdownxField()
+
+    owner = models.ForeignKey('auth.User', on_delete=models.PROTECT)
+
+    def __str__(self):
+        return self.nom
 
 
 class Marche(models.Model):
-    ouverture = models.DateTimeField()
-    fermeture = models.DateTimeField()
     adresse = models.CharField(max_length=250)
+
+    def __str__(self):
+        return self.adresse
+
+
+class MarcheHoraire(models.Model):
+    jour = models.DateField()
+    debut = models.TimeField()
+    fin = models.TimeField()
+
+    marche = models.ForeignKey('Marche', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return "{} le {}".format(self.marche.adresse, str(self.jour))

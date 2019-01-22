@@ -14,6 +14,6 @@ class PatrimoineAdmin(admin.ModelAdmin):
 admin.site.register(Patrimoine, PatrimoineAdmin)
 admin.site.register(Distinction)
 admin.site.register(Evenement)
-admin.site.register(New)
+admin.site.register(Newpaper)
 admin.site.register(Terrain)
 admin.site.register(Travail)
