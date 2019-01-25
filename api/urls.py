@@ -47,6 +47,14 @@ router.register('hebergement', HebergementViewset)
 router.register('cimetiere', CimetiereViewset)
 router.register('commerce', CommerceViewset)
 router.register('marche', MarcheViewset)
+router.register('marche-horaire', MarcheHoraireViewset, basename='marche-horaire')
+router.register('association', AssociationViewset)
+router.register('evenement', EvenementViewset)
+router.register('patrimoine', PatrimoineViewset)
+router.register('travail', TravailViewset)
+router.register('terrain', TerrainViewset)
+router.register('distinction', DistinctionViewset)
+router.register('newpaper', NewpaperViewset)
 
 urlpatterns = [
     url(r'^swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0),

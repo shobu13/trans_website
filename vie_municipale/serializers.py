@@ -1,6 +1,7 @@
 from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 
+from core.serializers import UploadedImageSerializer
 from vie_municipale.models import *
 
 
@@ -12,7 +13,7 @@ class CommissionSerializer(serializers.ModelSerializer):
 
 
 class CommissionDetailSerializer(serializers.ModelSerializer):
-    # images = UploadedImageSerializer(many=True)
+    images = UploadedImageSerializer(many=True, read_only=True)
 
     class Meta:
         model = Commission
@@ -45,6 +46,8 @@ class ConseilSerializer(serializers.ModelSerializer):
 
 
 class ConseilDetailSerializer(serializers.ModelSerializer):
+    images = UploadedImageSerializer(many=True, read_only=True)
+
     class Meta:
         model = Conseil
         fields = '__all__'
@@ -60,6 +63,8 @@ class ServiceSerializer(serializers.ModelSerializer):
 
 
 class ServiceDetailSerializer(serializers.ModelSerializer):
+    images = UploadedImageSerializer(many=True, read_only=True)
+
     class Meta:
         model = Service
         fields = '__all__'

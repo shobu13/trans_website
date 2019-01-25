@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
 from markdownx.models import MarkdownxField
@@ -14,11 +15,13 @@ class Association(models.Model):
     description = MarkdownxField()
 
     president = models.ForeignKey('auth.User', models.PROTECT,
-                                  related_name='association_president')
+                                  related_name='president')
     tresorier = models.ForeignKey('auth.User', models.PROTECT,
-                                  related_name='association_tresorier')
+                                  related_name='tresorier')
     secretaire = models.ForeignKey('auth.User', models.PROTECT,
-                                   related_name='association_secretaire')
+                                   related_name='secretaire')
+
+    images = GenericRelation('core.UploadedImage')
 
     def __str__(self):
         return self.nom

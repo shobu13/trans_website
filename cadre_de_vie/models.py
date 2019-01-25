@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 from markdownx.models import MarkdownxField
 from django.utils import timezone
@@ -9,6 +10,7 @@ class Evenement(models.Model):
     est_mairie = models.BooleanField(default=False)
 
     owner = models.ForeignKey('association.Association', on_delete=models.PROTECT, null=True)
+    images = GenericRelation('core.UploadedImage')
 
     def __str__(self):
         return self.nom
@@ -19,13 +21,8 @@ class Patrimoine(models.Model):
     description = MarkdownxField()
     adresse = models.CharField(max_length=250)
 
-    def __str__(self):
-        return self.nom
-
-
-class PatrimoineImage(models.Model):
-    image = models.ImageField(upload_to='patrimoine_images/')
-    patrimoine = models.ForeignKey('Patrimoine', on_delete=models.CASCADE)
+    patrimoine_image = models.ImageField(upload_to='patrimoine_images/')
+    images = GenericRelation('core.UploadedImage')
 
     def delete(self, using=None, keep_parents=False):
         """
@@ -35,11 +32,11 @@ class PatrimoineImage(models.Model):
         :param keep_parents:
         :return:
         """
-        self.image.delete()
+        self.patrimoine_image.delete()
         return super().delete(using, keep_parents)
 
     def __str__(self):
-        return "{} de {}".format(self.image.name, self.patrimoine.nom)
+        return self.nom
 
 
 class Travail(models.Model):

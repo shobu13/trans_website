@@ -5,7 +5,10 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 
-from api.permissions import UserIsHebergeurOrOwnerOrAdmin, UserIsCommercantOrOwnerOrAdmin
+from api.permissions import UserIsHebergeurOrOwnerOrAdmin, UserIsCommercantOrOwnerOrAdmin, \
+    UserIsPresidentOrSecretaryOrAdmin, UserIsPresidentOrSecretaryOfAssocOrAdmin
+from association.serializers import *
+from cadre_de_vie.serializers import *
 from core.serializers import *
 from vie_municipale.serializers import *
 from vie_quotidienne.serializers import *
@@ -93,6 +96,8 @@ class CommissionViewset(MultiSerializerViewSet, mixins.CreateModelMixin, mixins.
         'default': CommissionDetailSerializer,
         'list': CommissionSerializer,
         'create': CommissionCreateSerializer,
+        'update': CommissionCreateSerializer,
+        'partial_update': CommissionCreateSerializer,
     }
 
 
@@ -154,13 +159,16 @@ class HebergementViewset(MultiSerializerViewSet, CrudViewSet):
         'create': (UserIsHebergeurOrOwnerOrAdmin,),
         'update': (UserIsHebergeurOrOwnerOrAdmin,),
         'partial_update': (UserIsHebergeurOrOwnerOrAdmin,),
-        'delete': (UserIsHebergeurOrOwnerOrAdmin,),
-        'list': (permissions.IsAuthenticated,)
+        'destroy': (UserIsHebergeurOrOwnerOrAdmin,),
+        'list': (permissions.IsAuthenticated,),
+        'retrieve': (permissions.IsAuthenticated,),
     }
     serializers = {
         'default': HebergementDetailSerializer,
         'list': HebergementSerializer,
         'create': HebergementCreateSerializer,
+        'update': HebergementCreateSerializer,
+        'partial_update': HebergementCreateSerializer,
     }
 
 
@@ -184,13 +192,16 @@ class CommerceViewset(MultiSerializerViewSet, CrudViewSet):
         'create': (UserIsCommercantOrOwnerOrAdmin,),
         'update': (UserIsCommercantOrOwnerOrAdmin,),
         'partial_update': (UserIsCommercantOrOwnerOrAdmin,),
-        'delete': (UserIsCommercantOrOwnerOrAdmin,),
-        'list': (permissions.IsAuthenticated,)
+        'destroy': (UserIsCommercantOrOwnerOrAdmin,),
+        'list': (permissions.IsAuthenticated,),
+        'retrieve': (permissions.IsAuthenticated,),
     }
     serializers = {
         'default': CommerceDetailSerializer,
         'list': CommerceSerializer,
-        'create': CommerceCreateSerializer
+        'create': CommerceCreateSerializer,
+        'update': CommerceCreateSerializer,
+        'partial_update': CommerceCreateSerializer,
     }
 
 
@@ -204,4 +215,127 @@ class MarcheViewset(MultiSerializerViewSet, CrudViewSet):
     serializers = {
         'default': MarcheDetailSerializer,
         'list': MarcheSerializer,
+    }
+
+
+class MarcheHoraireViewset(MultiSerializerViewSet, CrudViewSet):
+    queryset = MarcheHoraire.objects.all()
+    permission_classes = {
+        'default': (permissions.IsAdminUser,),
+        'list': (permissions.IsAuthenticated,),
+        'retrieve': (permissions.IsAuthenticated,),
+    }
+    serializers = {
+        'default': MarcheHoraireSerializer
+    }
+
+
+class AssociationViewset(MultiSerializerViewSet, CrudViewSet):
+    queryset = Association.objects.all()
+    permission_classes = {
+        'default': (permissions.IsAdminUser,),
+        'create': (UserIsPresidentOrSecretaryOrAdmin,),
+        'update': (UserIsPresidentOrSecretaryOrAdmin,),
+        'partial_update': (UserIsPresidentOrSecretaryOrAdmin,),
+        'destroy': (UserIsPresidentOrSecretaryOrAdmin,),
+        'list': (permissions.IsAuthenticated,),
+        'retrieve': (permissions.IsAuthenticated,),
+    }
+    serializers = {
+        'default': AssociationDetailSerializer,
+        'list': AssociationSerializer,
+        'create': AssociationCreateSerializer,
+        'update': AssociationCreateSerializer,
+        'partial_update': AssociationCreateSerializer,
+    }
+
+
+class EvenementViewset(MultiSerializerViewSet, CrudViewSet):
+    queryset = Evenement.objects.all()
+    permission_classes = {
+        'default': (permissions.IsAdminUser,),
+        'create': (UserIsPresidentOrSecretaryOfAssocOrAdmin,),
+        'update': (UserIsPresidentOrSecretaryOfAssocOrAdmin,),
+        'partial_update': (UserIsPresidentOrSecretaryOfAssocOrAdmin,),
+        'destroy': (UserIsPresidentOrSecretaryOfAssocOrAdmin,),
+        'list': (permissions.IsAuthenticated,),
+        'retrieve': (permissions.IsAuthenticated,),
+    }
+    serializers = {
+        'default': EvenementDetailSerializer,
+        'list': EvenementSerializer,
+        'create': EvenementCreateSerializer,
+        'update': EvenementCreateSerializer,
+        'partial_update': EvenementCreateSerializer,
+    }
+
+
+class PatrimoineViewset(MultiSerializerViewSet, CrudViewSet):
+    queryset = Evenement.objects.all()
+    permission_classes = {
+        'default': (permissions.IsAdminUser,),
+        'list': (permissions.IsAuthenticated,),
+        'retrieve': (permissions.IsAuthenticated,),
+    }
+    serializers = {
+        'default': PatrimoineCreateSerializer,
+        'list': PatrimoineSerializer,
+        'retrieve': PatrimoineDetailSerializer
+    }
+
+
+class TravailViewset(MultiSerializerViewSet, CrudViewSet):
+    queryset = Travail.objects.all()
+    permission_classes = {
+        'default': (permissions.IsAdminUser,),
+        'list': (permissions.IsAuthenticated,),
+        'retrieve': (permissions.IsAuthenticated,),
+    }
+    serializers = {
+        'default': TravailSerializer,
+    }
+
+
+class TerrainViewset(MultiSerializerViewSet, CrudViewSet):
+    queryset = Terrain.objects.all()
+    permission_classes = {
+        'default': (permissions.IsAdminUser,),
+        'list': (permissions.IsAuthenticated,),
+        'retrieve': (permissions.IsAuthenticated,),
+    }
+    serializers = {
+        'default': TerrainSerializer,
+    }
+
+
+class DistinctionViewset(MultiSerializerViewSet, CrudViewSet):
+    queryset = Distinction.objects.all()
+    permission_classes = {
+        'default': (permissions.IsAdminUser,),
+        'list': (permissions.IsAuthenticated,),
+        'retrieve': (permissions.IsAuthenticated,),
+    }
+    serializers = {
+        'default': DistinctionDetailSerializer,
+        'list': DistinctionSerializer,
+    }
+
+
+class NewpaperViewset(MultiSerializerViewSet, CrudViewSet):
+    queryset = Newpaper.objects.all()
+    permission_classes = {
+        'default': (permissions.IsAdminUser,),
+        'create': (UserIsPresidentOrSecretaryOfAssocOrAdmin,),
+        'update': (UserIsPresidentOrSecretaryOfAssocOrAdmin,),
+        'partial_update': (UserIsPresidentOrSecretaryOfAssocOrAdmin,),
+        'destroy': (UserIsPresidentOrSecretaryOfAssocOrAdmin,),
+        'list': (permissions.IsAuthenticated,),
+        'retrieve': (permissions.IsAuthenticated,),
+    }
+    serializers = {
+        'default': NewpaperDetailSerializer,
+        'list': NewpaperSerializer,
+        'create': NewpaperCreateSerializer,
+        'update': NewpaperCreateSerializer,
+        'partial_update': NewpaperCreateSerializer,
     }

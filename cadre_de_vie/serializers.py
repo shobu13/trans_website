@@ -1,44 +1,24 @@
 from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 
-from vie_quotidienne.models import *
+from association.serializers import AssociationSerializer
+from cadre_de_vie.models import *
 from core.serializers import UploadedImageSerializer
 
 
-class SalleDeFeteSerializer(serializers.ModelSerializer):
+class EvenementSerializer(serializers.ModelSerializer):
+    owner = AssociationSerializer(read_only=True)
+
     class Meta:
-        model = SalleDeFete
-        fields = ('id', 'nom', 'adresse',)
+        model = Evenement
+        fields = ('nom', 'est_mairie', 'owner')
 
 
-class SalleDeFeteDetailSerializer(serializers.ModelSerializer):
+class EvenementDetailSerializer(serializers.ModelSerializer):
     images = UploadedImageSerializer(many=True, read_only=True)
 
     class Meta:
-        model = SalleDeFete
-        fields = '__all__'
-
-    content_type = serializers.CharField(read_only=True,
-                                         default=ContentType.objects.get_for_model(Meta.model).id)
-
-
-class TypeHebergementSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = TypeHebergement
-        fields = '__all__'
-
-
-class HebergementSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Hebergement
-        fields = ('id', 'nom', 'adresse', 'type')
-
-
-class HebergementDetailSerializer(serializers.ModelSerializer):
-    images = UploadedImageSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Hebergement
+        model = Evenement
         fields = '__all__'
         depth = 1
 
@@ -46,26 +26,26 @@ class HebergementDetailSerializer(serializers.ModelSerializer):
                                          default=ContentType.objects.get_for_model(Meta.model).id)
 
 
-class HebergementCreateSerializer(serializers.ModelSerializer):
+class EvenementCreateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Hebergement
+        model = Evenement
         fields = '__all__'
 
     content_type = serializers.CharField(read_only=True,
                                          default=ContentType.objects.get_for_model(Meta.model).id)
 
 
-class CimetiereSerializer(serializers.ModelSerializer):
+class PatrimoineSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Cimetiere
-        fields = ('id', 'nom', 'adresse',)
+        model = Patrimoine
+        fields = ('nom', 'adresse', 'patrimoine_image')
 
 
-class CimetiereDetailSerializer(serializers.ModelSerializer):
+class PatrimoineDetailSerializer(serializers.ModelSerializer):
     images = UploadedImageSerializer(many=True, read_only=True)
 
     class Meta:
-        model = Cimetiere
+        model = Patrimoine
         fields = '__all__'
         depth = 1
 
@@ -73,17 +53,38 @@ class CimetiereDetailSerializer(serializers.ModelSerializer):
                                          default=ContentType.objects.get_for_model(Meta.model).id)
 
 
-class CommerceSerializer(serializers.ModelSerializer):
+class PatrimoineCreateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Commerce
-        fields = ('id', 'nom', 'adresse',)
+        model = Patrimoine
+        fields = '__all__'
+
+    content_type = serializers.CharField(read_only=True,
+                                         default=ContentType.objects.get_for_model(Meta.model).id)
 
 
-class CommerceDetailSerializer(serializers.ModelSerializer):
+class TravailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Patrimoine
+        fields = '__all__'
+
+
+class TerrainSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Terrain
+        fields = '__all__'
+
+
+class DistinctionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Distinction
+        fields = ('nom', 'date',)
+
+
+class DistinctionDetailSerializer(serializers.ModelSerializer):
     images = UploadedImageSerializer(many=True, read_only=True)
 
     class Meta:
-        model = Commerce
+        model = Distinction
         fields = '__all__'
         depth = 1
 
@@ -91,30 +92,30 @@ class CommerceDetailSerializer(serializers.ModelSerializer):
                                          default=ContentType.objects.get_for_model(Meta.model).id)
 
 
-class CommerceCreateSerializer(serializers.ModelSerializer):
+class NewpaperSerializer(serializers.ModelSerializer):
+    owner = AssociationSerializer(read_only=True)
+
     class Meta:
-        model = Commerce
+        model = Newpaper
+        fields = ('titre', 'date', 'est_mairie', 'owner')
+
+
+class NewpaperDetailSerializer(serializers.ModelSerializer):
+    images = UploadedImageSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Newpaper
         fields = '__all__'
+        depth = 1
 
     content_type = serializers.CharField(read_only=True,
                                          default=ContentType.objects.get_for_model(Meta.model).id)
 
 
-class MarcheHoraireSerializer(serializers.ModelSerializer):
+class NewpaperCreateSerializer(serializers.ModelSerializer):
     class Meta:
-        model = MarcheHoraire
+        model = Newpaper
         fields = '__all__'
 
-
-class MarcheSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Marche
-        fields = ('id', 'adresse')
-
-
-class MarcheDetailSerializer(serializers.ModelSerializer):
-    horaires = MarcheHoraireSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Marche
-        fields = ('id', 'adresse', 'horaires')
+    content_type = serializers.CharField(read_only=True,
+                                         default=ContentType.objects.get_for_model(Meta.model).id)

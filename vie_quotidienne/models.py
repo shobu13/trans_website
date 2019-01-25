@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
 from markdownx.models import MarkdownxField
@@ -11,6 +12,8 @@ class SalleDeFete(models.Model):
     nom = models.CharField(max_length=150)
     adresse = models.CharField(max_length=250)
     description = MarkdownxField()
+
+    images = GenericRelation('core.UploadedImage')
 
     def __str__(self):
         return self.nom
@@ -28,6 +31,7 @@ class Hebergement(models.Model):
 
     type = models.ForeignKey('TypeHebergement', on_delete=models.PROTECT)
     owner = models.ForeignKey('auth.User', on_delete=models.PROTECT)
+    images = GenericRelation('core.UploadedImage')
 
     def __str__(self):
         return self.nom
@@ -51,6 +55,8 @@ class Cimetiere(models.Model):
     adresse = models.CharField(max_length=250)
     description = MarkdownxField()
 
+    images = GenericRelation('core.UploadedImage')
+
     def __str__(self):
         return self.nom
 
@@ -61,6 +67,7 @@ class Commerce(models.Model):
     description = MarkdownxField()
 
     owner = models.ForeignKey('auth.User', on_delete=models.PROTECT)
+    images = GenericRelation('core.UploadedImage')
 
     def __str__(self):
         return self.nom
@@ -78,7 +85,7 @@ class MarcheHoraire(models.Model):
     debut = models.TimeField()
     fin = models.TimeField()
 
-    marche = models.ForeignKey('Marche', on_delete=models.CASCADE)
+    marche = models.ForeignKey('Marche', on_delete=models.CASCADE, related_name="horaires")
 
     def __str__(self):
         return "{} le {}".format(self.marche.adresse, str(self.jour))

@@ -61,5 +61,7 @@ class Service(models.Model):
     titre = models.CharField(max_length=250)
     texte = MarkdownxField()
 
+    images = GenericRelation('core.UploadedImage')
+
     def __str__(self):
         return self.titre
