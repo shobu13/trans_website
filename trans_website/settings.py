@@ -133,8 +133,8 @@ MEDIA_URL = '/media/'
 
 # MEDIA_ROOT = os.path.join("/var/www/DCG_API", "media")
 # STATIC_ROOT = os.path.join("/var/www/DCG_API", "static")
-MEDIA_ROOT = os.path.join("media")
-STATIC_ROOT = os.path.join("static")
+MEDIA_ROOT = os.path.join("/var/www/trans", "media")
+STATIC_ROOT = os.path.join("/var/www/trans", "static")
 
 # Swagger
 SWAGGER_SETTINGS = {
