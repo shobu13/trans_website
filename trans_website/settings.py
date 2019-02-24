@@ -56,6 +56,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -131,8 +132,6 @@ USE_TZ = True
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
-# MEDIA_ROOT = os.path.join("/var/www/DCG_API", "media")
-# STATIC_ROOT = os.path.join("/var/www/DCG_API", "static")
 MEDIA_ROOT = os.path.join("/var/www/trans", "media")
 STATIC_ROOT = os.path.join("/var/www/trans", "static")
 

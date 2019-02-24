@@ -64,7 +64,7 @@ class PatrimoineCreateSerializer(serializers.ModelSerializer):
 
 class TravailSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Patrimoine
+        model = Travail
         fields = '__all__'
 
 
@@ -97,7 +97,7 @@ class NewpaperSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Newpaper
-        fields = ('titre', 'date', 'est_mairie', 'owner')
+        fields = ('titre', 'date', 'est_mairie', 'owner', 'texte')
 
 
 class NewpaperDetailSerializer(serializers.ModelSerializer):

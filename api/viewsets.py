@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
+from django.db.models import QuerySet
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets, permissions, mixins
+from rest_framework import viewsets, permissions, mixins, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
@@ -62,15 +63,15 @@ class UserViewset(MultiSerializerViewSet, mixins.CreateModelMixin, mixins.Update
                   mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.DestroyModelMixin):
     queryset = User.objects.all()
     permission_classes = {
-        'default': (permissions.IsAdminUser,),
-        'list': (permissions.IsAuthenticated,),
-        'retrieve': (permissions.IsAuthenticated,),
+        'default': (permissions.AllowAny,),
+
     }
     serializers = {
         'default': UserDetailSerializer,
         'list': UserSerializer,
         'retrieve': UserSerializer,
-        'detail-full': UserDetailSerializer
+        'detail_full': UserDetailSerializer,
+        'list_elected': UserSerializer
     }
 
     @action(
@@ -83,14 +84,35 @@ class UserViewset(MultiSerializerViewSet, mixins.CreateModelMixin, mixins.Update
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
+    @action(
+        detail=False,
+        methods=['get'],
+        url_path='list-elected',
+    )
+    def list_elected(self, request, *args, **kwargs):
+        response = {}
+        queryset = self.filter_queryset(self.get_queryset())
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+        queryset = queryset.filter(groups__name__contains="Élus")
+
+        response['maire'] = self.get_serializer(queryset.filter(elu_role__name='maire'), many=True).data
+        response['adjoint1'] = self.get_serializer(queryset.filter(elu_role__name='adjoint1'), many=True).data
+        response['adjoint2'] = self.get_serializer(queryset.filter(elu_role__name='adjoint2'), many=True).data
+        response['adjoint3'] = self.get_serializer(queryset.filter(elu_role__name='adjoint3'), many=True).data
+        response['conseillers'] = self.get_serializer(queryset.filter(elu_role__name='conseiller'), many=True).data
+        return Response(response)
+
 
 class CommissionViewset(MultiSerializerViewSet, mixins.CreateModelMixin, mixins.UpdateModelMixin,
                         mixins.ListModelMixin, mixins.RetrieveModelMixin, mixins.DestroyModelMixin):
     queryset = Commission.objects.all()
     permission_classes = {
-        'default': (permissions.IsAdminUser,),
-        'list': (permissions.IsAuthenticated,),
-        'retrieve': (permissions.IsAuthenticated,),
+        'default': (permissions.AllowAny,),
+
     }
     serializers = {
         'default': CommissionDetailSerializer,
@@ -104,9 +126,8 @@ class CommissionViewset(MultiSerializerViewSet, mixins.CreateModelMixin, mixins.
 class BulletinViewset(MultiSerializerViewSet, CrudViewSet):
     queryset = Bulletin.objects.all()
     permission_classes = {
-        'default': (permissions.IsAdminUser,),
-        'list': (permissions.IsAuthenticated,),
-        'retrieve': (permissions.IsAuthenticated,),
+        'default': (permissions.AllowAny,),
+
     }
     serializers = {
         'default': BulletinSerializer,
@@ -116,9 +137,8 @@ class BulletinViewset(MultiSerializerViewSet, CrudViewSet):
 class ConseilViewset(MultiSerializerViewSet, CrudViewSet):
     queryset = Conseil.objects.all()
     permission_classes = {
-        'default': (permissions.IsAdminUser,),
-        'list': (permissions.IsAuthenticated,),
-        'retrieve': (permissions.IsAuthenticated,),
+        'default': (permissions.AllowAny,),
+
     }
     serializers = {
         'default': ConseilDetailSerializer,
@@ -129,9 +149,8 @@ class ConseilViewset(MultiSerializerViewSet, CrudViewSet):
 class ServiceViewset(MultiSerializerViewSet, CrudViewSet):
     queryset = Service.objects.all()
     permission_classes = {
-        'default': (permissions.IsAdminUser,),
-        'list': (permissions.IsAuthenticated,),
-        'retrieve': (permissions.IsAuthenticated,),
+        'default': (permissions.AllowAny,),
+
     }
     serializers = {
         'default': ServiceDetailSerializer,
@@ -142,9 +161,8 @@ class ServiceViewset(MultiSerializerViewSet, CrudViewSet):
 class SalleDeFeteViewset(MultiSerializerViewSet, CrudViewSet):
     queryset = SalleDeFete.objects.all()
     permission_classes = {
-        'default': (permissions.IsAdminUser,),
-        'list': (permissions.IsAuthenticated,),
-        'retrieve': (permissions.IsAuthenticated,),
+        'default': (permissions.AllowAny,),
+
     }
     serializers = {
         'default': SalleDeFeteDetailSerializer,
@@ -155,13 +173,12 @@ class SalleDeFeteViewset(MultiSerializerViewSet, CrudViewSet):
 class HebergementViewset(MultiSerializerViewSet, CrudViewSet):
     queryset = Hebergement.objects.all()
     permission_classes = {
-        'default': (permissions.IsAdminUser,),
+        'default': (permissions.AllowAny,),
         'create': (UserIsHebergeurOrOwnerOrAdmin,),
         'update': (UserIsHebergeurOrOwnerOrAdmin,),
         'partial_update': (UserIsHebergeurOrOwnerOrAdmin,),
         'destroy': (UserIsHebergeurOrOwnerOrAdmin,),
-        'list': (permissions.IsAuthenticated,),
-        'retrieve': (permissions.IsAuthenticated,),
+
     }
     serializers = {
         'default': HebergementDetailSerializer,
@@ -175,9 +192,8 @@ class HebergementViewset(MultiSerializerViewSet, CrudViewSet):
 class CimetiereViewset(MultiSerializerViewSet, CrudViewSet):
     queryset = Cimetiere.objects.all()
     permission_classes = {
-        'default': (permissions.IsAdminUser,),
-        'list': (permissions.IsAuthenticated,),
-        'retrieve': (permissions.IsAuthenticated,),
+        'default': (permissions.AllowAny,),
+
     }
     serializers = {
         'default': CimetiereDetailSerializer,
@@ -188,13 +204,12 @@ class CimetiereViewset(MultiSerializerViewSet, CrudViewSet):
 class CommerceViewset(MultiSerializerViewSet, CrudViewSet):
     queryset = Commerce.objects.all()
     permission_classes = {
-        'default': (permissions.IsAdminUser,),
+        'default': (permissions.AllowAny,),
         'create': (UserIsCommercantOrOwnerOrAdmin,),
         'update': (UserIsCommercantOrOwnerOrAdmin,),
         'partial_update': (UserIsCommercantOrOwnerOrAdmin,),
         'destroy': (UserIsCommercantOrOwnerOrAdmin,),
-        'list': (permissions.IsAuthenticated,),
-        'retrieve': (permissions.IsAuthenticated,),
+
     }
     serializers = {
         'default': CommerceDetailSerializer,
@@ -208,9 +223,8 @@ class CommerceViewset(MultiSerializerViewSet, CrudViewSet):
 class MarcheViewset(MultiSerializerViewSet, CrudViewSet):
     queryset = Marche.objects.all()
     permission_classes = {
-        'default': (permissions.IsAdminUser,),
-        'list': (permissions.IsAuthenticated,),
-        'retrieve': (permissions.IsAuthenticated,),
+        'default': (permissions.AllowAny,),
+
     }
     serializers = {
         'default': MarcheDetailSerializer,
@@ -221,9 +235,8 @@ class MarcheViewset(MultiSerializerViewSet, CrudViewSet):
 class MarcheHoraireViewset(MultiSerializerViewSet, CrudViewSet):
     queryset = MarcheHoraire.objects.all()
     permission_classes = {
-        'default': (permissions.IsAdminUser,),
-        'list': (permissions.IsAuthenticated,),
-        'retrieve': (permissions.IsAuthenticated,),
+        'default': (permissions.AllowAny,),
+
     }
     serializers = {
         'default': MarcheHoraireSerializer
@@ -233,13 +246,12 @@ class MarcheHoraireViewset(MultiSerializerViewSet, CrudViewSet):
 class AssociationViewset(MultiSerializerViewSet, CrudViewSet):
     queryset = Association.objects.all()
     permission_classes = {
-        'default': (permissions.IsAdminUser,),
+        'default': (permissions.AllowAny,),
         'create': (UserIsPresidentOrSecretaryOrAdmin,),
         'update': (UserIsPresidentOrSecretaryOrAdmin,),
         'partial_update': (UserIsPresidentOrSecretaryOrAdmin,),
         'destroy': (UserIsPresidentOrSecretaryOrAdmin,),
-        'list': (permissions.IsAuthenticated,),
-        'retrieve': (permissions.IsAuthenticated,),
+
     }
     serializers = {
         'default': AssociationDetailSerializer,
@@ -253,13 +265,12 @@ class AssociationViewset(MultiSerializerViewSet, CrudViewSet):
 class EvenementViewset(MultiSerializerViewSet, CrudViewSet):
     queryset = Evenement.objects.all()
     permission_classes = {
-        'default': (permissions.IsAdminUser,),
+        'default': (permissions.AllowAny,),
         'create': (UserIsPresidentOrSecretaryOfAssocOrAdmin,),
         'update': (UserIsPresidentOrSecretaryOfAssocOrAdmin,),
         'partial_update': (UserIsPresidentOrSecretaryOfAssocOrAdmin,),
         'destroy': (UserIsPresidentOrSecretaryOfAssocOrAdmin,),
-        'list': (permissions.IsAuthenticated,),
-        'retrieve': (permissions.IsAuthenticated,),
+
     }
     serializers = {
         'default': EvenementDetailSerializer,
@@ -273,9 +284,8 @@ class EvenementViewset(MultiSerializerViewSet, CrudViewSet):
 class PatrimoineViewset(MultiSerializerViewSet, CrudViewSet):
     queryset = Evenement.objects.all()
     permission_classes = {
-        'default': (permissions.IsAdminUser,),
-        'list': (permissions.IsAuthenticated,),
-        'retrieve': (permissions.IsAuthenticated,),
+        'default': (permissions.AllowAny,),
+
     }
     serializers = {
         'default': PatrimoineCreateSerializer,
@@ -287,9 +297,8 @@ class PatrimoineViewset(MultiSerializerViewSet, CrudViewSet):
 class TravailViewset(MultiSerializerViewSet, CrudViewSet):
     queryset = Travail.objects.all()
     permission_classes = {
-        'default': (permissions.IsAdminUser,),
-        'list': (permissions.IsAuthenticated,),
-        'retrieve': (permissions.IsAuthenticated,),
+        'default': (permissions.AllowAny,),
+
     }
     serializers = {
         'default': TravailSerializer,
@@ -299,9 +308,8 @@ class TravailViewset(MultiSerializerViewSet, CrudViewSet):
 class TerrainViewset(MultiSerializerViewSet, CrudViewSet):
     queryset = Terrain.objects.all()
     permission_classes = {
-        'default': (permissions.IsAdminUser,),
-        'list': (permissions.IsAuthenticated,),
-        'retrieve': (permissions.IsAuthenticated,),
+        'default': (permissions.AllowAny,),
+
     }
     serializers = {
         'default': TerrainSerializer,
@@ -311,9 +319,8 @@ class TerrainViewset(MultiSerializerViewSet, CrudViewSet):
 class DistinctionViewset(MultiSerializerViewSet, CrudViewSet):
     queryset = Distinction.objects.all()
     permission_classes = {
-        'default': (permissions.IsAdminUser,),
-        'list': (permissions.IsAuthenticated,),
-        'retrieve': (permissions.IsAuthenticated,),
+        'default': (permissions.AllowAny,),
+
     }
     serializers = {
         'default': DistinctionDetailSerializer,
@@ -324,13 +331,12 @@ class DistinctionViewset(MultiSerializerViewSet, CrudViewSet):
 class NewpaperViewset(MultiSerializerViewSet, CrudViewSet):
     queryset = Newpaper.objects.all()
     permission_classes = {
-        'default': (permissions.IsAdminUser,),
+        'default': (permissions.AllowAny,),
         'create': (UserIsPresidentOrSecretaryOfAssocOrAdmin,),
         'update': (UserIsPresidentOrSecretaryOfAssocOrAdmin,),
         'partial_update': (UserIsPresidentOrSecretaryOfAssocOrAdmin,),
         'destroy': (UserIsPresidentOrSecretaryOfAssocOrAdmin,),
-        'list': (permissions.IsAuthenticated,),
-        'retrieve': (permissions.IsAuthenticated,),
+
     }
     serializers = {
         'default': NewpaperDetailSerializer,
@@ -339,3 +345,58 @@ class NewpaperViewset(MultiSerializerViewSet, CrudViewSet):
         'update': NewpaperCreateSerializer,
         'partial_update': NewpaperCreateSerializer,
     }
+
+    # @action(
+    #     detail=False,
+    #     methods=['get'],
+    #     url_path='retrieve-full',
+    # )
+    # def last_newpaper(self, request, *args, **kwargs):
+    #     number = request.query_params.get("number") or 3
+    #     is_hall = request.query_params.get('is_hall') or False
+    #
+    #     if number < 0 or type(is_hall) is not type(bool):
+    #         return Response(status=status.HTTP_400_BAD_REQUEST)
+    #
+    #     queryset = self.filter_queryset(self.get_queryset())
+    #
+    #     queryset = queryset.filter(est_mairie=is_hall)[0:number]
+    #
+    #     page = self.paginate_queryset(queryset)
+    #     if page is not None:
+    #         serializer = self.get_serializer(page, many=True)
+    #         return self.get_paginated_response(serializer.data)
+    #
+    #     serializer = self.get_serializer(queryset, many=True)
+    #     return Response(serializer.data)
+
+    def get_queryset(self):
+        assert self.queryset is not None, (
+                "'%s' should either include a `queryset` attribute, "
+                "or override the `get_queryset()` method."
+                % self.__class__.__name__
+        )
+
+        queryset = self.queryset
+        number = self.request.query_params.get("number") or None
+        is_hall = self.request.query_params.get('is_hall') or None
+
+        if number:
+            number = int(number)
+        if is_hall:
+            is_hall = int(is_hall) >= 1
+
+        print(is_hall, number)
+
+        if is_hall is not None:
+            queryset = queryset.filter(est_mairie=is_hall)
+        if number:
+            if number < 0:
+                queryset = queryset.all()
+            elif number >= 0:
+                queryset = queryset.all()[0:number]
+
+        if isinstance(queryset, QuerySet):
+            # Ensure queryset is re-evaluated on each request.
+            queryset = queryset.all()
+        return queryset

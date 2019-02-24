@@ -77,7 +77,7 @@ class Newpaper(models.Model):
     date = models.DateField(default=timezone.now)
     est_mairie = models.BooleanField()
 
-    owner = models.ForeignKey('association.Association', on_delete=models.CASCADE, null=True)
+    owner = models.ForeignKey('association.Association', on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         if self.owner is None:
