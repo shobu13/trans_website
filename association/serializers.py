@@ -8,7 +8,7 @@ from core.serializers import UploadedImageSerializer
 class AssociationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Association
-        fields = ('nom', 'president')
+        fields = ('id', 'nom', 'president', 'cover')
 
 
 class AssociationDetailSerializer(serializers.ModelSerializer):

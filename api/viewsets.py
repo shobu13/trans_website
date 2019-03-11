@@ -380,16 +380,31 @@ class NewpaperViewset(MultiSerializerViewSet, CrudViewSet):
         queryset = self.queryset
         number = self.request.query_params.get("number") or None
         is_hall = self.request.query_params.get('is_hall') or None
+        owner = self.request.query_params.get('owner') or None
+        year = self.request.query_params.get('year') or None
+        month = self.request.query_params.get('month') or None
 
         if number:
             number = int(number)
         if is_hall:
             is_hall = int(is_hall) >= 1
+        if owner:
+            owner = int(owner)
+        if year:
+            year = int(year)
+        if month:
+            month = int(month)
 
-        print(is_hall, number)
+        print(is_hall, number, year)
 
         if is_hall is not None:
             queryset = queryset.filter(est_mairie=is_hall)
+        elif owner is not None:
+            queryset = queryset.filter(owner_id=owner)
+        if year:
+            queryset = queryset.filter(date__year=year)
+        if month:
+            queryset = queryset.filter(date__month=month)
         if number:
             if number < 0:
                 queryset = queryset.all()

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'drf_yasg',
     'django_filters',
+    'markdownx',
 
     'core',
     'vie_municipale',

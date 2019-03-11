@@ -21,7 +21,13 @@ class Association(models.Model):
     secretaire = models.ForeignKey('auth.User', models.PROTECT,
                                    related_name='secretaire')
 
+    cover = models.ImageField(upload_to="uploaded_images/association/", null=True)
+
     images = GenericRelation('core.UploadedImage')
+
+    def delete(self, using=None, keep_parents=False):
+        self.cover.delete()
+        super().delete()
 
     def __str__(self):
         return self.nom
