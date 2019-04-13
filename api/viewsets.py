@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib.auth.models import User
 from django.db.models import QuerySet
 from django_filters.rest_framework import DjangoFilterBackend
@@ -378,33 +380,31 @@ class NewpaperViewset(MultiSerializerViewSet, CrudViewSet):
         )
 
         queryset = self.queryset
-        number = self.request.query_params.get("number") or None
-        is_hall = self.request.query_params.get('is_hall') or None
-        owner = self.request.query_params.get('owner') or None
-        year = self.request.query_params.get('year') or None
-        month = self.request.query_params.get('month') or None
+        number = self.request.query_params.get("number", None)
+        is_hall = self.request.query_params.get('is_hall', None)
+        owner = self.request.query_params.get('owner', None)
+        first_date: str = self.request.query_params.get('first_date', None)
+        last_date: str = self.request.query_params.get('last_date', None)
 
         if number:
             number = int(number)
         if is_hall:
-            is_hall = int(is_hall) >= 1
+            is_hall = is_hall == 'true' or is_hall == 'True'
         if owner:
             owner = int(owner)
-        if year:
-            year = int(year)
-        if month:
-            month = int(month)
-
-        print(is_hall, number, year)
+        if first_date:
+            year, month, day = first_date.split('-')
+            first_date: datetime = datetime(int(year), int(month), int(day))
+        if last_date:
+            year, month, day = last_date.split('-')
+            last_date: datetime = datetime(int(year), int(month), int(day))
 
         if is_hall is not None:
             queryset = queryset.filter(est_mairie=is_hall)
         elif owner is not None:
             queryset = queryset.filter(owner_id=owner)
-        if year:
-            queryset = queryset.filter(date__year=year)
-        if month:
-            queryset = queryset.filter(date__month=month)
+        if first_date and last_date:
+            queryset = queryset.filter(date__range=(first_date, last_date))
         if number:
             if number < 0:
                 queryset = queryset.all()
