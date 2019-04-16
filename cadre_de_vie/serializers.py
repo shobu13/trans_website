@@ -97,7 +97,7 @@ class NewpaperSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Newpaper
-        fields = ('titre', 'date', 'est_mairie', 'owner', 'texte')
+        fields = ('id', 'titre', 'date', 'est_mairie', 'owner', 'texte')
 
 
 class NewpaperDetailSerializer(serializers.ModelSerializer):

@@ -76,7 +76,7 @@ class CimetiereDetailSerializer(serializers.ModelSerializer):
 class CommerceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Commerce
-        fields = ('id', 'nom', 'adresse',)
+        fields = ('id', 'nom', 'adresse', 'resume')
 
 
 class CommerceDetailSerializer(serializers.ModelSerializer):
@@ -117,4 +117,4 @@ class MarcheDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Marche
-        fields = ('id', 'adresse', 'horaires')
+        fields = ('id', 'adresse', 'code_postal', 'horaires')

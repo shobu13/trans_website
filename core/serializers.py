@@ -21,7 +21,8 @@ class UploadedImageDetailSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'first_name', 'email', 'groups', 'is_staff', 'is_superuser', 'elu_picture')
+        fields = (
+        'id', 'username', 'first_name', 'last_name', 'email', 'groups', 'is_staff', 'is_superuser', 'elu_picture')
         depth = 1
 
 

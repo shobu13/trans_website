@@ -64,6 +64,7 @@ class Cimetiere(models.Model):
 class Commerce(models.Model):
     nom = models.CharField(max_length=150)
     adresse = models.CharField(max_length=250)
+    resume = models.CharField(max_length=280)
     description = MarkdownxField()
 
     owner = models.ForeignKey('auth.User', on_delete=models.PROTECT)
@@ -75,13 +76,22 @@ class Commerce(models.Model):
 
 class Marche(models.Model):
     adresse = models.CharField(max_length=250)
+    code_postal = models.CharField(max_length=5)
 
     def __str__(self):
         return self.adresse
 
 
 class MarcheHoraire(models.Model):
-    jour = models.DateField()
+    jour = models.CharField(choices=(
+        ('Lundi', 'Lundi'),
+        ('Mardi', 'Mardi'),
+        ('Mercredi', 'Mercredi'),
+        ('Jeudi', 'Jeudi'),
+        ('Vendredi', 'Vendredi'),
+        ('Samedi', 'Samedi'),
+        ('Dimanche', 'Dimanche'),
+    ), max_length=10)
     debut = models.TimeField()
     fin = models.TimeField()
 
