@@ -133,11 +133,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
-# MEDIA_ROOT = os.path.join("/var/www/trans", "media")
-# STATIC_ROOT = os.path.join("/var/www/trans", "static")
+MEDIA_ROOT = os.path.join("/var/www/trans", "media")
+STATIC_ROOT = os.path.join("/var/www/trans", "static")
 
-MEDIA_ROOT = os.path.join("media")
-STATIC_ROOT = os.path.join("static")
+# MEDIA_ROOT = os.path.join("media")
+# STATIC_ROOT = os.path.join("static")
 
 # Swagger
 SWAGGER_SETTINGS = {
