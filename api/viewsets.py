@@ -125,10 +125,22 @@ class UserViewset(MultiSerializerViewSet, mixins.ListModelMixin, mixins.Retrieve
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
 
-        response['maire'] = self.get_serializer(queryset.filter(elu_role__name='maire')[0], many=False).data
-        response['adjoint1'] = self.get_serializer(queryset.filter(elu_role__name='adjoint1')[0], many=False).data
-        response['adjoint2'] = self.get_serializer(queryset.filter(elu_role__name='adjoint2')[0], many=False).data
-        response['adjoint3'] = self.get_serializer(queryset.filter(elu_role__name='adjoint3')[0], many=False).data
+        try:
+            response['maire'] = self.get_serializer(queryset.get(elu_role__name='maire'), many=False).data
+        except:
+            pass
+        try:
+            response['adjoint1'] = self.get_serializer(queryset.get(elu_role__name='adjoint1'), many=False).data
+        except:
+            pass
+        try:
+            response['adjoint2'] = self.get_serializer(queryset.get(elu_role__name='adjoint2'), many=False).data
+        except:
+            pass
+        try:
+            response['adjoint3'] = self.get_serializer(queryset.get(elu_role__name='adjoint3'), many=False).data
+        except:
+            pass
         response['conseillers'] = self.get_serializer(queryset.filter(elu_role__name='conseiller'), many=True).data
         return Response(response)
 
