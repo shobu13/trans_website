@@ -4,6 +4,6 @@
 venv/
 
 *.pyc
-/trans_website/settings/local.py
-/trans_website/settings/production.py
+/trans_website/env_settings/local.py
+/trans_website/env_settings/production.py
 /db.sqlite3

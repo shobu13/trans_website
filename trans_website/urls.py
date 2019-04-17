@@ -42,7 +42,7 @@ urlpatterns = [
     path('api/', include('api.urls'))
 ]
 try:
-    from trans_website.settings import local
+    from trans_website.env_settings import local
 
     urlpatterns += staticfiles_urlpatterns()
     urlpatterns += static(local.MEDIA_URL, document_root=local.MEDIA_ROOT)
