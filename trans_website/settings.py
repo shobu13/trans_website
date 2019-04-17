@@ -170,6 +170,6 @@ try:
 except ImportError:
     print('no local setting found')
     try:
-        from .production import *
+        from trans_website.env_settings.production import *
     except ImportError:
         print('no production setting found')
