@@ -76,7 +76,7 @@ class CimetiereDetailSerializer(serializers.ModelSerializer):
 class CommerceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Commerce
-        fields = ('id', 'nom', 'adresse', 'resume')
+        fields = ('id', 'nom', 'adresse', 'resume', 'header')
 
 
 class CommerceDetailSerializer(serializers.ModelSerializer):

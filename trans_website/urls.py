@@ -22,8 +22,6 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
-from trans_website import settings
-
 schema_view = get_schema_view(
     openapi.Info(
         title="Trans_website API",
@@ -43,6 +41,10 @@ urlpatterns = [
     path('', include('core.urls')),
     path('api/', include('api.urls'))
 ]
+try:
+    from trans_website.settings import local
 
-urlpatterns += staticfiles_urlpatterns()
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += staticfiles_urlpatterns()
+    urlpatterns += static(local.MEDIA_URL, document_root=local.MEDIA_ROOT)
+except ImportError:
+    print("No local config found")

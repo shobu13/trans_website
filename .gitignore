@@ -4,3 +4,5 @@
 venv/
 
 *.pyc
+/trans_website/settings/local.py
+/trans_website/settings/production.py

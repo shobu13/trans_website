@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.contrib.contenttypes.fields import GenericRelation
 from django.db import models
 
@@ -30,7 +31,7 @@ class Hebergement(models.Model):
     description = models.TextField()
 
     type = models.ForeignKey('TypeHebergement', on_delete=models.PROTECT)
-    owner = models.ForeignKey('auth.User', on_delete=models.PROTECT)
+    owner = models.ForeignKey(User, on_delete=models.PROTECT)
     images = GenericRelation('core.UploadedImage')
 
     def __str__(self):
@@ -64,10 +65,12 @@ class Cimetiere(models.Model):
 class Commerce(models.Model):
     nom = models.CharField(max_length=150)
     adresse = models.CharField(max_length=250)
+    code_postal = models.CharField(max_length=5)
     resume = models.CharField(max_length=280)
     description = MarkdownxField()
+    header = models.ImageField(upload_to='commerces_header/')
 
-    owner = models.ForeignKey('auth.User', on_delete=models.PROTECT)
+    owner = models.ForeignKey(User, on_delete=models.PROTECT)
     images = GenericRelation('core.UploadedImage')
 
     def __str__(self):
