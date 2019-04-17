@@ -38,7 +38,6 @@ urlpatterns = [
     path('admin/doc/', include('django.contrib.admindocs.urls')),
     path('admin/', admin.site.urls),
     path(r'markdownx/', include('markdownx.urls')),
-    path('', include('core.urls')),
     path('api/', include('api.urls'))
 ]
 try:
