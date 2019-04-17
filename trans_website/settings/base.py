@@ -164,3 +164,12 @@ JWT_AUTH = {
 }
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+try:
+    from .local import *
+except ImportError:
+    print('no local setting found')
+    try:
+        from .production import *
+    except ImportError:
+        print('no production setting found')
