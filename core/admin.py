@@ -7,10 +7,12 @@ from core.models import *
 
 class EluPictureInline(admin.StackedInline):
     model = EluPicture
+    extra = 0
 
 
 class EluRoleInline(admin.StackedInline):
     model = EluRole
+    extra = 0
 
 
 class UserAdmin(BaseUserAdmin):
