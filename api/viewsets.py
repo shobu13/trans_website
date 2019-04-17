@@ -124,7 +124,6 @@ class UserViewset(MultiSerializerViewSet, mixins.ListModelMixin, mixins.Retrieve
         if page is not None:
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
-        queryset = queryset.filter(groups__name__contains="Élus")
 
         response['maire'] = self.get_serializer(queryset.filter(elu_role__name='maire')[0], many=False).data
         response['adjoint1'] = self.get_serializer(queryset.filter(elu_role__name='adjoint1')[0], many=False).data
