@@ -8,8 +8,9 @@ class Evenement(models.Model):
     nom = models.CharField(max_length=150)
     description = MarkdownxField()
     est_mairie = models.BooleanField(default=False)
-
-    owner = models.ForeignKey('association.Association', on_delete=models.PROTECT, null=True)
+    date = models.DateField()
+    owner = models.ForeignKey('association.Association', on_delete=models.PROTECT, null=True, blank=True,
+                              verbose_name='Propriétaire')
     images = GenericRelation('core.UploadedImage')
 
     def __str__(self):

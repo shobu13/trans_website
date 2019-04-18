@@ -8,7 +8,7 @@ from vie_municipale.models import *
 class CommissionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Commission
-        fields = ('id', 'titre', 'date',)
+        fields = ('id', 'titre',)
         depth = 0
 
 

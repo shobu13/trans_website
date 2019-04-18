@@ -10,7 +10,6 @@ class Commission(models.Model):
     Modele definissant une commission
     """
     titre = models.CharField(max_length=250)
-    date = models.DateField(default=timezone.now)
     description = MarkdownxField()
 
     titulaires = models.ManyToManyField('auth.User', related_name='commission_titulaire')
@@ -48,6 +47,7 @@ class Conseil(models.Model):
     """Modele definissant un Conseil"""
     titre = models.CharField(max_length=250)
     texte = MarkdownxField()
+    pdf = models.FileField(upload_to='conseil_pdf/')
     date = models.DateField()
 
     images = GenericRelation('core.UploadedImage')

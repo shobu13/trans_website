@@ -1,7 +1,8 @@
 from datetime import datetime
 
 from django.contrib.auth.models import User
-from django.db.models import QuerySet
+from django.db.models import QuerySet, Model
+from django.core.exceptions import ObjectDoesNotExist
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, permissions, mixins, status
 from rest_framework.decorators import action
@@ -127,20 +128,12 @@ class UserViewset(MultiSerializerViewSet, mixins.ListModelMixin, mixins.Retrieve
 
         try:
             response['maire'] = self.get_serializer(queryset.get(elu_role__name='maire'), many=False).data
-        except:
-            pass
-        try:
             response['adjoint1'] = self.get_serializer(queryset.get(elu_role__name='adjoint1'), many=False).data
-        except:
-            pass
-        try:
             response['adjoint2'] = self.get_serializer(queryset.get(elu_role__name='adjoint2'), many=False).data
-        except:
-            pass
-        try:
             response['adjoint3'] = self.get_serializer(queryset.get(elu_role__name='adjoint3'), many=False).data
-        except:
-            pass
+        except Model.DoesNotExist as e:
+            e.message = "le conseil municipal n'a pas été entièrement renseigner dans la base de donné"
+            raise
         response['conseillers'] = self.get_serializer(queryset.filter(elu_role__name='conseiller'), many=True).data
         return Response(response)
 
