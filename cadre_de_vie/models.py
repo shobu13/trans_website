@@ -8,7 +8,8 @@ class Evenement(models.Model):
     nom = models.CharField(max_length=150)
     description = MarkdownxField()
     est_mairie = models.BooleanField(default=False)
-    date = models.DateField()
+    debut = models.DateField()
+    fin = models.DateField()
     owner = models.ForeignKey('association.Association', on_delete=models.PROTECT, null=True, blank=True,
                               verbose_name='Propriétaire')
     images = GenericRelation('core.UploadedImage')
@@ -48,10 +49,23 @@ class Travail(models.Model):
 
     nom = models.CharField(max_length=150)
     adresse = models.CharField(max_length=250)
-    duree = models.DurationField()
+    debut = models.DateTimeField()
+    fin = models.DateTimeField()
+
+    type = models.ForeignKey('cadre_de_vie.TypeTravail', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         return '{}, {}'.format(self.nom, self.adresse)
+
+
+class TypeTravail(models.Model):
+    libelle = models.CharField(max_length=200)
+
+    class Meta:
+        verbose_name_plural = 'Type travaux'
+
+    def __str__(self):
+        return self.libelle
 
 
 class Terrain(models.Model):
@@ -67,6 +81,9 @@ class Distinction(models.Model):
     nom = models.CharField(max_length=150)
     description = MarkdownxField()
     date = models.DateField()
+
+    class Meta:
+        ordering = ('-date',)
 
     def __str__(self):
         return '{} le {}'.format(self.nom, self.date)

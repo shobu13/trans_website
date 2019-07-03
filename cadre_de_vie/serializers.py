@@ -11,7 +11,7 @@ class EvenementSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Evenement
-        fields = ('nom', 'est_mairie', 'owner')
+        fields = ('id', 'nom', 'est_mairie', 'owner', 'debut', 'fin')
 
 
 class EvenementDetailSerializer(serializers.ModelSerializer):
@@ -38,7 +38,7 @@ class EvenementCreateSerializer(serializers.ModelSerializer):
 class PatrimoineSerializer(serializers.ModelSerializer):
     class Meta:
         model = Patrimoine
-        fields = ('nom', 'adresse', 'patrimoine_image')
+        fields = ('id', 'nom', 'adresse', 'patrimoine_image')
 
 
 class PatrimoineDetailSerializer(serializers.ModelSerializer):
@@ -63,6 +63,8 @@ class PatrimoineCreateSerializer(serializers.ModelSerializer):
 
 
 class TravailSerializer(serializers.ModelSerializer):
+    type = serializers.StringRelatedField()
+
     class Meta:
         model = Travail
         fields = '__all__'
@@ -77,19 +79,14 @@ class TerrainSerializer(serializers.ModelSerializer):
 class DistinctionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Distinction
-        fields = ('nom', 'date',)
-
-
-class DistinctionDetailSerializer(serializers.ModelSerializer):
-    images = UploadedImageSerializer(many=True, read_only=True)
-
-    class Meta:
-        model = Distinction
         fields = '__all__'
-        depth = 1
 
-    content_type = serializers.CharField(read_only=True,
-                                         default=ContentType.objects.get_for_model(Meta.model).id)
+
+# class DistinctionDetailSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Distinction
+#         fields = '__all__'
+#         depth = 1
 
 
 class NewpaperSerializer(serializers.ModelSerializer):

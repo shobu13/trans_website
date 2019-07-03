@@ -29,6 +29,8 @@ class Hebergement(models.Model):
     nom = models.CharField(max_length=150)
     adresse = models.CharField(max_length=250)
     description = models.TextField()
+    resume = models.CharField(max_length=280)
+    header = models.ImageField(upload_to='hebergement_header/', null=True)
 
     type = models.ForeignKey('TypeHebergement', on_delete=models.PROTECT)
     owner = models.ForeignKey(User, on_delete=models.PROTECT)
@@ -54,6 +56,7 @@ class Cimetiere(models.Model):
     """
     nom = models.CharField(max_length=150)
     adresse = models.CharField(max_length=250)
+    code_postal = models.CharField(max_length=5)
     description = MarkdownxField()
 
     images = GenericRelation('core.UploadedImage')

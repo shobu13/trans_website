@@ -30,8 +30,9 @@ class TypeHebergementSerializer(serializers.ModelSerializer):
 
 class HebergementSerializer(serializers.ModelSerializer):
     class Meta:
+        depth = 1
         model = Hebergement
-        fields = ('id', 'nom', 'adresse', 'type')
+        fields = ('id', 'nom', 'adresse', 'type', 'header', 'resume')
 
 
 class HebergementDetailSerializer(serializers.ModelSerializer):

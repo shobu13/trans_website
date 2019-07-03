@@ -156,6 +156,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ),
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',)
 }
 
 JWT_AUTH = {
@@ -167,11 +168,13 @@ CORS_ORIGIN_ALLOW_ALL = True
 
 try:
     from trans_website.env_settings.local import *
+
     print("lcocal setting used")
 except ImportError:
     print('no local setting found')
     try:
         from trans_website.env_settings.production import *
+
         print("production setting used")
     except ImportError:
         print('no production setting found')

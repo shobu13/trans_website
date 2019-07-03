@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.db.models import QuerySet, Model
 from django.core.exceptions import ObjectDoesNotExist
 from django_filters.rest_framework import DjangoFilterBackend
+from django_filters import rest_framework as filters
 from rest_framework import viewsets, permissions, mixins, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -221,6 +222,17 @@ class HebergementViewset(MultiSerializerViewSet, ListRetrieveViewSet):
     }
 
 
+class TypeHebergementViewset(MultiSerializerViewSet, ListRetrieveViewSet):
+    queryset = TypeHebergement.objects.all()
+    permission_classes = {
+        'default': (permissions.AllowAny,),
+
+    }
+    serializers = {
+        'default': TypeHebergementSerializer,
+    }
+
+
 class CimetiereViewset(MultiSerializerViewSet, ListRetrieveViewSet):
     queryset = Cimetiere.objects.all()
     permission_classes = {
@@ -294,6 +306,17 @@ class AssociationViewset(MultiSerializerViewSet, ListRetrieveViewSet):
     }
 
 
+class EvenementFilter(filters.FilterSet):
+    est_mairie = filters.BooleanFilter()
+    owner = filters.NumberFilter()
+    debut = filters.DateFromToRangeFilter()
+    fin = filters.DateFromToRangeFilter()
+
+    class Meta:
+        model = Evenement
+        fields = ('debut', 'fin')
+
+
 class EvenementViewset(MultiSerializerViewSet, ListRetrieveViewSet):
     queryset = Evenement.objects.all()
     permission_classes = {
@@ -311,10 +334,12 @@ class EvenementViewset(MultiSerializerViewSet, ListRetrieveViewSet):
         'update': EvenementCreateSerializer,
         'partial_update': EvenementCreateSerializer,
     }
+    filter_backends = (DjangoFilterBackend,)
+    filter_class = EvenementFilter
 
 
 class PatrimoineViewset(MultiSerializerViewSet, ListRetrieveViewSet):
-    queryset = Evenement.objects.all()
+    queryset = Patrimoine.objects.all()
     permission_classes = {
         'default': (permissions.AllowAny,),
 
@@ -326,8 +351,17 @@ class PatrimoineViewset(MultiSerializerViewSet, ListRetrieveViewSet):
     }
 
 
+class TravailFilter(filters.FilterSet):
+    debut = filters.DateFromToRangeFilter()
+    fin = filters.DateFromToRangeFilter()
+
+    class Meta:
+        model = Travail
+        fields = ('debut', 'fin')
+
+
 class TravailViewset(MultiSerializerViewSet, ListRetrieveViewSet):
-    queryset = Travail.objects.all()
+    queryset = Travail.objects.order_by('type__libelle')
     permission_classes = {
         'default': (permissions.AllowAny,),
 
@@ -335,6 +369,8 @@ class TravailViewset(MultiSerializerViewSet, ListRetrieveViewSet):
     serializers = {
         'default': TravailSerializer,
     }
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = TravailFilter
 
 
 class TerrainViewset(MultiSerializerViewSet, ListRetrieveViewSet):
@@ -355,9 +391,21 @@ class DistinctionViewset(MultiSerializerViewSet, ListRetrieveViewSet):
 
     }
     serializers = {
-        'default': DistinctionDetailSerializer,
-        'list': DistinctionSerializer,
+        'default': DistinctionSerializer,
     }
+
+    # def get_queryset(self):
+    #     assert self.queryset is not None, (
+    #             "'%s' should either include a `queryset` attribute, "
+    #             "or override the `get_queryset()` method."
+    #             % self.__class__.__name__
+    #     )
+    #
+    #     queryset = self.queryset
+    #     if isinstance(queryset, QuerySet):
+    #         # Ensure queryset is re-evaluated on each request.
+    #         queryset = reversed(queryset.order_by('date'))
+    #     return queryset
 
 
 class NewpaperViewset(MultiSerializerViewSet, ListRetrieveViewSet):

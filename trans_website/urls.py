@@ -17,6 +17,7 @@ from django.conf.urls import url
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.shortcuts import redirect
 from django.urls import path, include
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
@@ -38,7 +39,8 @@ urlpatterns = [
     path('admin/doc/', include('django.contrib.admindocs.urls')),
     path('admin/', admin.site.urls),
     path(r'markdownx/', include('markdownx.urls')),
-    path('api/', include('api.urls'))
+    path('api/', include('api.urls')),
+    path('', lambda request: redirect(to='api/'))
 ]
 try:
     from trans_website.env_settings import local
