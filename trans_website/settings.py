@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'vie_quotidienne',
     'association',
     'cadre_de_vie',
+    'api',
 ]
 
 MIDDLEWARE = [
