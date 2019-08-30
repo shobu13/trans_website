@@ -13,7 +13,7 @@ class Commission(models.Model):
     description = MarkdownxField()
 
     titulaires = models.ManyToManyField('auth.User', related_name='commission_titulaire')
-    suppleants = models.ManyToManyField('auth.User', related_name='commission_suppleants', blank=True)
+    suppleants = models.ManyToManyField('auth.User', related_name='commission_suppleants', blank=True, null=True)
 
     images = GenericRelation('core.UploadedImage')
 
